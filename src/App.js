@@ -4,31 +4,54 @@ import ComponenteA from './component/pure/componenteA';
 import ListaContactos from './component/pure/ListaContactos';
 import Caja from './component/pure/Caja';
 import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+import LoginForm from './component/pure/Forms/LoginForm';
+import RegisterForm from './component/pure/Forms/RegisterForm';
 import TaskForm from './component/pure/TaskForm';
 
 const App = () => {
-  const [tasks, setTasks] = useState([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const handleCreateTask = (task) => {
-    setTasks([...tasks, task]);
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
   };
 
   return (
-    <div>
-      <TaskForm onSubmit={handleCreateTask} />
+    <Router>
+      <Switch>
+        <Route exact path="/">
+          {isAuthenticated ? <Redirect to="/tasks" /> : <Redirect to="/login" />}
+        </Route>
 
-      <h2>Tareas:</h2>
-      <ul>
-        {tasks.map((task, index) => (
-          <li key={index}>
-            <h3>{task.title}</h3>
-            <p>{task.description}</p>
-          </li>
-        ))}
-      </ul>
-    </div>
+        <Route exact path="/login">
+          <LoginForm onLogin={handleLogin} />
+        </Route>
+
+        <Route exact path="/register">
+          <RegisterForm />
+        </Route>
+
+        <PrivateRoute exact path="/tasks" isAuthenticated={isAuthenticated}>
+          <TaskForm onLogout={handleLogout} />
+        </PrivateRoute>
+      </Switch>
+    </Router>
   );
 };
+
+const PrivateRoute = ({ isAuthenticated, children, ...rest }) => (
+  <Route {...rest}>
+    {isAuthenticated ? (
+      children
+    ) : (
+      <Redirect to={{ pathname: '/login', state: { from: rest.location } }} />
+    )}
+  </Route>
+);
 
 
 //function App() {
