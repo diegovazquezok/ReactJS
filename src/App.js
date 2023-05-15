@@ -8,8 +8,20 @@ import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-d
 import LoginForm from './component/pure/Forms/LoginForm';
 import RegisterForm from './component/pure/Forms/RegisterForm';
 import TaskForm from './component/pure/TaskForm';
+import ChuckNorrisJokes from '../src/component/pure/ChuckNorrisJokes';
 
 const App = () => {
+  return (
+    <div>
+      <ChuckNorrisJokes />
+    </div>
+  );
+};
+
+
+
+
+{/*const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const handleLogin = () => {
